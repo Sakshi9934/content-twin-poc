@@ -1,118 +1,122 @@
-'use client';
-import React, { useState, JSX } from 'react';
-import { LinkField, Text, TextField, useSitecore } from '@sitecore-content-sdk/nextjs';
-import { CompatibleLink } from 'components/content-sdk/CompatibleLink';
-import { getFieldValue } from 'lib/component-props';
-import { NavigationFields as Fields, NavigationListItemProps, NavigationProps } from './navigation.props';
+import React, { JSX } from "react";
+import {
+  ComponentParams,
+  ComponentRendering,
+} from "@sitecore-content-sdk/nextjs";
+import { RichText as ContentSdkRichText } from "@sitecore-content-sdk/nextjs";
 
-const getTextContent = (fields: Fields): JSX.Element | string => {
-  const navigationTitle = getFieldValue(fields.NavigationTitle);
-  const title = getFieldValue(fields.Title);
+interface RichTextBlockAProps {
+  rendering: ComponentRendering & { params: ComponentParams };
+  params: ComponentParams;
+}
 
-  if (navigationTitle) return <Text field={navigationTitle} />;
-  if (title) return <Text field={title} />;
-  return fields.DisplayName;
-};
+// export const Default = (props: RichTextBlockAProps): JSX.Element => {
+//   const id = props.params.RenderingIdentifier;
+//   // const text = props.rendering.fields?.text.value;
 
-const getLinkField = (fields: Fields): LinkField => ({
-  value: {
-    href: fields.Href,
-    title:
-      getFieldValue(fields.NavigationTitle)?.value?.toString() ??
-      getFieldValue(fields.Title)?.value?.toString() ??
-      fields.DisplayName,
-    querystring: fields.Querystring,
-  },
-});
+//   console.log(props);
 
-const NavigationListItem: React.FC<NavigationListItemProps> = ({
-  fields,
-  handleClick,
-  relativeLevel,
-}) => {
-  const [isActive, setIsActive] = useState(false);
-  const { page } = useSitecore();
+//   return (
+//     <div
+//       className={`component ${props.params.styles}`}
+//       id={id ? id : undefined}
+//     >
+//       <div className="component-content">
+//         <nav
+//           style={{
+//             display: "flex",
+//             justifyContent: "space-between",
+//             alignItems: "center",
+//             padding: "12px 24px",
+//             background: "linear-gradient(90deg, #0f9d58, #34a853, #66bb6a)",
+//             color: "white",
+//             fontFamily: "Arial, sans-serif",
+//           }}
+//         >
+//           <h2 style={{ margin: 0 }}>MyApp</h2>
 
-  const classNames = [...fields.Styles, `rel-level${relativeLevel}`, isActive ? 'active' : ''].join(
-    ' '
-  );
+//           <ul
+//             style={{
+//               listStyle: "none",
+//               display: "flex",
+//               gap: "20px",
+//               margin: 0,
+//               padding: 0,
+//             }}
+//           >
+//             {["Home", "About", "Services", "Contact"].map((item) => (
+//               <li key={item} style={{ cursor: "pointer" }}>
+//                 {item}
+//               </li>
+//             ))}
+//           </ul>
+//         </nav>
+//       </div>
+//     </div>
+//   );
+// };
 
-  const hasChildren = fields.Children?.length > 0;
-  const children = hasChildren
-    ? fields.Children.map((fields, index) => (
-        <NavigationListItem
-          key={`${index}-${fields.Id}`}
-          fields={fields}
-          handleClick={handleClick}
-          relativeLevel={relativeLevel + 1}
-        />
-      ))
-    : null;
-
-  return (
-    <li className={classNames} key={fields.Id} tabIndex={0}>
-      <div
-        className={`navigation-title ${hasChildren ? 'child' : ''}`}
-        onClick={() => setIsActive(!isActive)}
-      >
-        <CompatibleLink field={getLinkField(fields)} editable={page.mode.isEditing} onClick={handleClick}>
-          {getTextContent(fields)}
-        </CompatibleLink>
-      </div>
-      {hasChildren && <ul className="clearfix">{children}</ul>}
-    </li>
-  );
-};
-
-export const Default = ({ params, fields }: NavigationProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { page } = useSitecore();
-  const { styles, RenderingIdentifier: id } = params;
-
-  if (!Object.values(fields).length) {
-    return (
-      <div className={`component navigation ${styles}`} id={id}>
-        <div className="component-content">[Navigation]</div>
-      </div>
-    );
-  }
-
-  const handleToggleMenu = (event?: React.MouseEvent<HTMLElement>, forceState?: boolean) => {
-    if (event && page.mode.isEditing) {
-      event.preventDefault();
-    }
-
-    setIsMenuOpen(forceState ?? !isMenuOpen);
-  };
-
-  const navigationItems = Object.values(fields)
-    .filter(Boolean)
-    .map((item: Fields, index) => (
-      <NavigationListItem
-        key={`${index}-${item.Id}`}
-        fields={item}
-        handleClick={(event) => handleToggleMenu(event, false)}
-        relativeLevel={1}
-      />
-    ));
+export const Default = (props: RichTextBlockAProps): JSX.Element => {
+  const id = props.params.RenderingIdentifier;
 
   return (
-    <div className={`component navigation ${styles}`} id={id}>
-      <label className="menu-mobile-navigate-wrapper">
-        <input
-          type="checkbox"
-          className="menu-mobile-navigate"
-          checked={isMenuOpen}
-          onChange={() => handleToggleMenu()}
-          aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-        />
-        <div className="menu-humburger" />
-        <div className="component-content">
-          <nav>
-            <ul className="clearfix">{navigationItems}</ul>
-          </nav>
-        </div>
-      </label>
+    <div
+      className={`component ${props.params.styles}`}
+      id={id ? id : undefined}
+    >
+      <div className="component-content">
+        <nav
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "18px 28px",
+            backgroundColor: "#f8f8f8",
+            border: "1px solid #dcdcdc",
+            fontFamily: "Arial, sans-serif",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              fontWeight: 700,
+              fontSize: "18px",
+              color: "#1f9d94",
+            }}
+          >
+            <span
+              style={{
+                width: "12px",
+                height: "12px",
+                backgroundColor: "#1f9d94",
+                transform: "rotate(45deg)",
+                display: "inline-block",
+              }}
+            />
+            NorthBank
+          </div>
+
+          <ul
+            style={{
+              listStyle: "none",
+              display: "flex",
+              gap: "24px",
+              margin: 0,
+              padding: 0,
+              color: "#8a8a8a",
+              fontSize: "15px",
+            }}
+          >
+            {["Products", "Rates", "About", "Contact"].map((item) => (
+              <li key={item} style={{ cursor: "pointer" }}>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
     </div>
   );
 };
