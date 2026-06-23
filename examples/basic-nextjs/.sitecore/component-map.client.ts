@@ -8,6 +8,8 @@ export const componentMap = new Map<string, NextjsContentSdkComponent>([
   ['BYOCWrapper', BYOCClientWrapper],
   ['FEaaSWrapper', FEaaSClientWrapper],
   ['Form', Form],
+  ['PartialDesignDynamicPlaceholder', { ...PartialDesignDynamicPlaceholder }],
+  ['Navigation', { ...Navigation }],
 ]);
 
 export default componentMap;
