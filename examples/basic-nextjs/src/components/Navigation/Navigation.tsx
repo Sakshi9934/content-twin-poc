@@ -56,13 +56,11 @@
 //   );
 // };
 
-export const Default = (props: RichTextBlockAProps): JSX.Element => {
-  const id = props.params.RenderingIdentifier;
-
+export const Default = () => {
+  
   return (
     <div
-      className={`component ${props.params.styles}`}
-      id={id ? id : undefined}
+      
     >
       <div className="component-content">
         <nav
