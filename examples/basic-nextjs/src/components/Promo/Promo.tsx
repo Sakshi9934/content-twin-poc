@@ -8,6 +8,8 @@ import { ComponentProps } from 'lib/component-props';
 type PromoProps = ComponentProps;
 
 export const Default = (props: PromoProps): JSX.Element => {
+
+    console.log(props);
   const routeFields = props.page?.layout?.sitecore?.route?.fields;
 
   if (!routeFields) {

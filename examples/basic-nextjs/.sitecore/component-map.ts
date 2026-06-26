@@ -5,6 +5,7 @@ import { Form } from '@sitecore-content-sdk/nextjs';
 
 // end of built-in components
 import * as Promo from 'src/components/Promo/Promo';
+import * as contenttwincomponent from 'src/components/Promo/content-twin-component';
 import * as PartialDesignDynamicPlaceholder from 'src/components/partial-design-dynamic-placeholder/PartialDesignDynamicPlaceholder';
 import * as Navigation from 'src/components/Navigation/Navigation';
 
@@ -13,6 +14,7 @@ export const componentMap = new Map<string, NextjsContentSdkComponent>([
   ['FEaaSWrapper', FEaaSServerWrapper],
   ['Form', { ...Form, componentType: 'client' }],
   ['Promo', { ...Promo }],
+  ['content-twin-component', { ...contenttwincomponent }],
   ['PartialDesignDynamicPlaceholder', { ...PartialDesignDynamicPlaceholder }],
   ['Navigation', { ...Navigation }],
 ]);
