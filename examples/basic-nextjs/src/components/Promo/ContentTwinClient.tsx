@@ -93,21 +93,36 @@ export default function ContentTwinClient() {
       
       // Environment variable version
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_CONTENT_TWIN_BASE_URL}/api/content-twin/generate`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-content-twin-admin-key":
-              process.env.NEXT_PUBLIC_CONTENT_TWIN_ADMIN_KEY!,
-          },
-          body: JSON.stringify({
-            path: selectedPage,
-            forceRegenerate: true,
-          }),
-        }
-      );
+    //   const response = await fetch(
+    //     `${process.env.NEXT_PUBLIC_CONTENT_TWIN_BASE_URL}/api/content-twin/generate`,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         "x-content-twin-admin-key":
+    //           process.env.NEXT_PUBLIC_CONTENT_TWIN_ADMIN_KEY!,
+    //       },
+    //       body: JSON.stringify({
+    //         path: selectedPage,
+    //         forceRegenerate: true,
+    //       }),
+    //     }
+    //   );
+
+    //api route version
+
+    const response = await fetch("/api/content-twin/generate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "x-content-twin-admin-key":
+      process.env.NEXT_PUBLIC_CONTENT_TWIN_ADMIN_KEY!,
+  },
+  body: JSON.stringify({
+    path: selectedPage,
+    forceRegenerate: true,
+  }),
+});
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
