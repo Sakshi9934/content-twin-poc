@@ -1,12 +1,12 @@
 {
-  "machineSummary": "First-time buyer home loan offering up to 85% property financing with 5-30 year tenures and interest rates starting at 8.4% per annum. Covers eligibility, down payment, EMI planning, and application requirements.",
-  "shortAnswer": "A home loan product designed for first-time buyers in India, financing up to 85% of property value with flexible repayment terms from 5 to 30 years and competitive interest rates.",
+  "machineSummary": "First-time buyer home loan product offering up to 85% property financing with 5-30 year tenures and interest rates starting at 8.4% per annum. Includes guidance on eligibility, down payment, EMI planning, and application documents.",
+  "shortAnswer": "A home loan product designed for first-time buyers in India, financing up to 85% of property value with flexible repayment terms of 5-30 years and competitive interest rates starting at 8.4% per annum.",
   "keyFacts": [
-    "Financing available up to 85% of property value",
+    "Finances up to 85% of property value",
     "Repayment tenures range from 5 to 30 years",
     "Interest rates start at 8.4% per annum on floating basis",
     "Designed specifically for first-time home buyers",
-    "Covers eligibility, down payment, EMI planning, and documentation"
+    "Covers eligibility, down payment, EMI planning, and documentation requirements"
   ],
   "entities": [
     "Home Loan",
@@ -16,13 +16,13 @@
     "Marketing Team"
   ],
   "topics": [
-    "Home Loan",
-    "First-Time Buyers",
+    "Home Loan Products",
+    "First-Time Buyer Programs",
     "Property Financing",
-    "Interest Rates",
     "EMI Planning",
     "Loan Eligibility",
     "Down Payment",
+    "Interest Rates",
     "Loan Documentation"
   ],
   "relationships": [
@@ -33,17 +33,17 @@
     },
     {
       "subject": "Home Loan for First-Time Buyers",
-      "predicate": "operates in",
+      "predicate": "available in",
       "object": "India"
     },
     {
       "subject": "Home Loan for First-Time Buyers",
-      "predicate": "finances up to",
+      "predicate": "offers financing up to",
       "object": "85% of property value"
     },
     {
       "subject": "Home Loan for First-Time Buyers",
-      "predicate": "offers interest rate starting at",
+      "predicate": "has interest rate starting at",
       "object": "8.4% per annum"
     },
     {
@@ -55,41 +55,46 @@
   "schemaType": "Product",
   "schemaJson": {
     "@context": "https://schema.org",
-    "@type": "FinancialProduct",
+    "@type": "Product",
     "name": "Home Loan for First-Time Buyers",
     "description": "A guide to home loan options designed for first-time buyers, covering eligibility, down payment, EMI planning, and the documents needed to apply.",
-    "provider": {
-      "@type": "FinancialService",
-      "name": "Banking Institution"
-    },
+    "category": "Home Loan",
     "audience": {
       "@type": "Audience",
       "audienceType": "First-Time Buyers"
     },
     "areaServed": "India",
-    "url": "http://localhost:3000/products/home-loan",
-    "interestRate": "8.4%",
-    "loanTerm": "5-30 years",
-    "loanAmount": "Up to 85% of property value"
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "INR",
+      "price": "Variable",
+      "description": "Financing up to 85% of property value with interest rates starting at 8.4% per annum"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "Marketing Team"
+    },
+    "dateModified": "2026-06-20",
+    "url": "http://localhost:3000/products/home-loan"
   },
   "recommendedQuestions": [
     "What is the maximum loan amount available for first-time home buyers?",
-    "What are the current interest rates for home loans?",
-    "What documents are required to apply for a home loan?",
+    "What are the eligibility criteria for this home loan product?",
+    "What is the current interest rate for the first-time buyer home loan?",
+    "What documents are required to apply for this home loan?",
     "What is the minimum down payment required?",
-    "How is EMI calculated for home loans?",
-    "What are the eligibility criteria for first-time buyers?",
+    "How is EMI calculated for this home loan?",
     "What are the available repayment tenure options?"
   ],
   "missingFields": [
-    "loanProcessingFee",
-    "prepaymentPenalty",
-    "insuranceRequirements",
-    "propertyTypeEligibility",
-    "incomeRequirements",
-    "creditScoreRequirements",
-    "maximumLoanAmount",
-    "minimumDownPaymentPercentage"
+    "Eligibility criteria details",
+    "Minimum down payment percentage",
+    "EMI calculation methodology",
+    "Processing fees",
+    "Prepayment penalties",
+    "Insurance requirements",
+    "Loan approval timeline",
+    "Maximum loan amount in absolute terms"
   ],
   "id": "home-loan",
   "title": "Home Loan for First-Time Buyers",
@@ -99,6 +104,6 @@
     "path": "/sitecore/content/SitecoreAIDemo/content-twin-poc/Home/products/home-loan",
     "itemId": "25D580DE2D8F4A83A1226228CF92D6AC"
   },
-  "lastGenerated": "2026-06-29T08:27:50.596Z",
+  "lastGenerated": "2026-06-29T10:24:50.280Z",
   "lastReviewedDate": "2026-06-20"
 }
