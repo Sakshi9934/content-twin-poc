@@ -3,7 +3,7 @@
   "shortAnswer": "A home loan product designed for first-time buyers in India, financing up to 85% of property value with flexible repayment terms from 5 to 30 years and competitive interest rates.",
   "keyFacts": [
     "Financing available up to 85% of property value",
-    "Repayment tenure ranges from 5 to 30 years",
+    "Repayment tenures range from 5 to 30 years",
     "Interest rates start at 8.4% per annum on floating basis",
     "Designed specifically for first-time home buyers",
     "Covers eligibility, down payment, EMI planning, and documentation"
@@ -19,76 +19,77 @@
     "Home Loan",
     "First-Time Buyers",
     "Property Financing",
-    "EMI Planning",
     "Interest Rates",
+    "EMI Planning",
     "Loan Eligibility",
     "Down Payment",
     "Loan Documentation"
   ],
   "relationships": [
     {
-      "subject": "Home Loan",
+      "subject": "Home Loan for First-Time Buyers",
       "predicate": "targets",
       "object": "First-Time Buyers"
     },
     {
-      "subject": "Home Loan",
-      "predicate": "available in",
+      "subject": "Home Loan for First-Time Buyers",
+      "predicate": "operates in",
       "object": "India"
     },
     {
-      "subject": "Home Loan",
-      "predicate": "belongs to industry",
-      "object": "Banking"
-    },
-    {
-      "subject": "Home Loan",
+      "subject": "Home Loan for First-Time Buyers",
       "predicate": "finances up to",
       "object": "85% of property value"
     },
     {
-      "subject": "Home Loan",
+      "subject": "Home Loan for First-Time Buyers",
       "predicate": "offers interest rate starting at",
       "object": "8.4% per annum"
+    },
+    {
+      "subject": "Home Loan for First-Time Buyers",
+      "predicate": "provides repayment tenure of",
+      "object": "5 to 30 years"
     }
   ],
   "schemaType": "Product",
   "schemaJson": {
     "@context": "https://schema.org",
-    "@type": "Product",
+    "@type": "FinancialProduct",
     "name": "Home Loan for First-Time Buyers",
     "description": "A guide to home loan options designed for first-time buyers, covering eligibility, down payment, EMI planning, and the documents needed to apply.",
-    "category": "Financial Service",
+    "provider": {
+      "@type": "FinancialService",
+      "name": "Banking Institution"
+    },
     "audience": {
       "@type": "Audience",
       "audienceType": "First-Time Buyers"
     },
     "areaServed": "India",
-    "offers": {
-      "@type": "Offer",
-      "priceCurrency": "INR",
-      "description": "Financing up to 85% of property value with interest rates starting at 8.4% per annum"
-    }
+    "url": "http://localhost:3000/products/home-loan",
+    "interestRate": "8.4%",
+    "loanTerm": "5-30 years",
+    "loanAmount": "Up to 85% of property value"
   },
   "recommendedQuestions": [
     "What is the maximum loan amount available for first-time home buyers?",
-    "What are the eligibility criteria for this home loan?",
-    "What is the current interest rate for this home loan?",
+    "What are the current interest rates for home loans?",
+    "What documents are required to apply for a home loan?",
     "What is the minimum down payment required?",
-    "What documents are needed to apply for this home loan?",
-    "What are the available repayment tenure options?",
-    "How is EMI calculated for this loan?",
-    "Are there any processing fees associated with this loan?"
+    "How is EMI calculated for home loans?",
+    "What are the eligibility criteria for first-time buyers?",
+    "What are the available repayment tenure options?"
   ],
   "missingFields": [
-    "loanAmount",
-    "minimumDownPayment",
-    "processingFees",
-    "eligibilityCriteria",
-    "requiredDocuments",
-    "applicationProcess",
-    "approvalTimeline",
-    "prepaymentPenalty"
+    "loanProcessingFee",
+    "prepaymentPenalty",
+    "insuranceRequirements",
+    "propertyTypeEligibility",
+    "incomeRequirements",
+    "creditScoreRequirements",
+    "maximumLoanAmount",
+    "minimumDownPaymentPercentage"
   ],
   "id": "home-loan",
   "title": "Home Loan for First-Time Buyers",
@@ -98,6 +99,6 @@
     "path": "/sitecore/content/SitecoreAIDemo/content-twin-poc/Home/products/home-loan",
     "itemId": "25D580DE2D8F4A83A1226228CF92D6AC"
   },
-  "lastGenerated": "2026-06-28T19:35:02.220Z",
+  "lastGenerated": "2026-06-29T08:27:50.596Z",
   "lastReviewedDate": "2026-06-20"
 }

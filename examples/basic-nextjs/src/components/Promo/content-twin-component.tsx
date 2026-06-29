@@ -187,12 +187,20 @@ interface ContentTwinProps {
 export const Default = (props: ContentTwinProps): JSX.Element => {
   const id = props.params.RenderingIdentifier;
 
+  const pages =
+    props.rendering.fields?.data?.datasource?.children?.results?.map(
+      (item: any) => ({
+        name: item.name,
+        href: item.field?.jsonValue?.value?.href,
+      })
+    ) ?? [];
+
   return (
     <div
       className={`component ${props.params.styles}`}
       id={id || undefined}
     >
-      <ContentTwinClient />
+      <ContentTwinClient pages={pages} />
     </div>
   );
 };

@@ -31,25 +31,36 @@ const ReactJson = dynamic(
   }
 );
 
-const pageOptions = [
-  {
-    value: "/products/home-loan",
-    label: "🏠 Home Loan for First-Time Buyers",
-  },
-  {
-    value: "/products/life-insurance",
-    label: "❤️ Life Insurance",
-  },
-  {
-    value: "/products/ev-service-plan",
-    label: "⚡ EV Service Plan",
-  },
-];
+// const pageOptions = [
+//   {
+//     value: "/products/home-loan",
+//     label: "🏠 Home Loan for First-Time Buyers",
+//   },
+//   {
+//     value: "/products/life-insurance",
+//     label: "❤️ Life Insurance",
+//   },
+//   {
+//     value: "/products/ev-service-plan",
+//     label: "⚡ EV Service Plan",
+//   },
+// ];
 
-export default function ContentTwinClient() {
+interface PageOption {
+  name: string;
+  href: string;
+}
+
+interface ContentTwinClientProps {
+  pages: PageOption[];
+}
+
+export default function ContentTwinClient({
+  pages,
+}: ContentTwinClientProps) {
   const [selectedPage, setSelectedPage] = useState(
-    pageOptions[0].value
-  );
+  pages[0]?.href ?? ""
+);
 
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -139,6 +150,8 @@ export default function ContentTwinClient() {
     }
   }
 
+  
+
   return (
     <div
       style={{
@@ -222,14 +235,14 @@ export default function ContentTwinClient() {
               transition: ".2s",
             }}
           >
-            {pageOptions.map((page) => (
-              <option
-                key={page.value}
-                value={page.value}
-              >
-                {page.label}
-              </option>
-            ))}
+            {pages.map((page) => (
+  <option
+    key={page.href}
+    value={page.href}
+  >
+    {page.name}
+  </option>
+))}
           </select>
 
           <div

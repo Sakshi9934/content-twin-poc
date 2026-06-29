@@ -1,0 +1,91 @@
+{
+  "machineSummary": "The EV Care Service Plan is a prepaid maintenance package for electric vehicles available in 3-year and 5-year options, covering scheduled servicing, battery health checks, and roadside assistance to control long-term ownership costs.",
+  "shortAnswer": "A prepaid maintenance plan for electric vehicles covering scheduled servicing, battery health checks, and roadside assistance over a multi-year period.",
+  "keyFacts": [
+    "Available in 3-year and 5-year options",
+    "Covers scheduled servicing and battery health checks",
+    "Includes roadside assistance",
+    "Can be purchased at vehicle delivery or within first year of ownership",
+    "Designed to control long-term ownership costs",
+    "Applicable to electric vehicles"
+  ],
+  "entities": [
+    "EV Care Service Plan",
+    "Electric Vehicle Service Plan"
+  ],
+  "topics": [
+    "Electric Vehicle Maintenance",
+    "Prepaid Service Plans",
+    "Battery Health Management",
+    "Roadside Assistance",
+    "Vehicle Ownership Costs",
+    "Automotive Services"
+  ],
+  "relationships": [
+    {
+      "subject": "EV Care Service Plan",
+      "predicate": "covers",
+      "object": "scheduled servicing"
+    },
+    {
+      "subject": "EV Care Service Plan",
+      "predicate": "covers",
+      "object": "battery health checks"
+    },
+    {
+      "subject": "EV Care Service Plan",
+      "predicate": "covers",
+      "object": "roadside assistance"
+    },
+    {
+      "subject": "EV Care Service Plan",
+      "predicate": "available in",
+      "object": "3-year and 5-year options"
+    },
+    {
+      "subject": "EV Care Service Plan",
+      "predicate": "applicable to",
+      "object": "electric vehicles"
+    }
+  ],
+  "schemaType": "Product",
+  "schemaJson": {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Electric Vehicle Service Plan",
+    "description": "A prepaid maintenance plan for electric vehicles covering scheduled servicing, battery health checks, and roadside assistance over a multi-year period.",
+    "category": "Automotive Service",
+    "areaServed": "India",
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "INR",
+      "availability": "https://schema.org/InStock"
+    }
+  },
+  "recommendedQuestions": [
+    "What is covered under the EV Care Service Plan?",
+    "What are the available plan durations?",
+    "When can I purchase the EV Care Service Plan?",
+    "Does the plan include roadside assistance?",
+    "How does the plan help control ownership costs?",
+    "Is battery health monitoring included?"
+  ],
+  "missingFields": [
+    "pricing",
+    "coverage details",
+    "exclusions",
+    "claim process",
+    "service network details",
+    "renewal terms"
+  ],
+  "id": "new-ev-service-plan",
+  "title": "Electric Vehicle Service Plan",
+  "humanUrl": "http://localhost:3000/products/new-ev-service-plan",
+  "source": {
+    "system": "XM Cloud",
+    "path": "/sitecore/content/SitecoreAIDemo/content-twin-poc/Home/products/new-ev-service-plan",
+    "itemId": "81C86EDD4655449D9B453F8447E1FB07"
+  },
+  "lastGenerated": "2026-06-29T08:28:17.436Z",
+  "lastReviewedDate": "2026-06-20"
+}
