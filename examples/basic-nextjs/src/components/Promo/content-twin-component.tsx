@@ -14,13 +14,13 @@ interface ContentTwinProps {
 export const Default = (props: ContentTwinProps): JSX.Element => {
   const id = props.params.RenderingIdentifier;
 
+  const fields = props.rendering.fields as any;
+
   const pages =
-    props.rendering.fields?.data?.datasource?.children?.results?.map(
-      (item: any) => ({
-        name: item.name,
-        href: item.field?.jsonValue?.value?.href,
-      })
-    ) ?? [];
+    fields?.data?.datasource?.children?.results?.map((item: any) => ({
+      name: item.name,
+      href: item.field?.jsonValue?.value?.href,
+    })) ?? [];
 
   return (
     <div
