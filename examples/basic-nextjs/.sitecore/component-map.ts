@@ -7,6 +7,8 @@ import { Form } from '@sitecore-content-sdk/nextjs';
 import * as Promo from 'src/components/Promo/Promo';
 import * as ContentTwinClient from 'src/components/Promo/ContentTwinClient';
 import * as contenttwincomponent from 'src/components/Promo/content-twin-component';
+import * as AgentDemoClient from 'src/components/Promo/AgentDemoClient';
+import * as agentdemo from 'src/components/Promo/agent-demo';
 import * as PartialDesignDynamicPlaceholder from 'src/components/partial-design-dynamic-placeholder/PartialDesignDynamicPlaceholder';
 import * as Navigation from 'src/components/Navigation/Navigation';
 
@@ -17,6 +19,8 @@ export const componentMap = new Map<string, NextjsContentSdkComponent>([
   ['Promo', { ...Promo }],
   ['ContentTwinClient', { ...ContentTwinClient, componentType: 'client' }],
   ['content-twin-component', { ...contenttwincomponent }],
+  ['AgentDemoClient', { ...AgentDemoClient }],
+  ['agent-demo', { ...agentdemo }],
   ['PartialDesignDynamicPlaceholder', { ...PartialDesignDynamicPlaceholder }],
   ['Navigation', { ...Navigation }],
 ]);
