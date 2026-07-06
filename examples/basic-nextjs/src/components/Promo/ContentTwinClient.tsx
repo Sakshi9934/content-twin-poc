@@ -216,7 +216,7 @@ export default function ContentTwinClient({
     }}
   >
 
-    {/* <div
+    {/* <div //this is an alternative fix to the UI will be removed on current UI's approval
   style={{
     position: "relative",
     width: 400,
