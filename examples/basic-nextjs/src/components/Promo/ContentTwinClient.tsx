@@ -200,89 +200,108 @@ export default function ContentTwinClient({
           Content Twin.
         </p>
 
-        <div
-          style={{
-            position: "relative",
-            marginBottom: 20,
-          }}
-        >
-          <select
-            value={selectedPage}
-            disabled={loading}
-            onChange={(e) =>
-              setSelectedPage(e.target.value)
-            }
-            style={{
-              appearance: "none",
-              WebkitAppearance: "none",
-              MozAppearance: "none",
-
-              width: "100%",
-              padding: "16px 52px 16px 18px",
-
-              borderRadius: 10,
-              border: "2px solid #d7dde5",
-
-              background: "#fff",
-
-              fontSize: 16,
-              fontWeight: 600,
-
-              cursor: "pointer",
-
-              outline: "none",
-
-              transition: ".2s",
-            }}
-          >
-            {pages.map((page) => (
-  <option
-    key={page.href}
-    value={page.href}
+<div
+  style={{
+    display: "flex",
+    gap: 16,
+    alignItems: "stretch",
+    flexWrap: "wrap",
+  }}
+>
+  <div
+    style={{
+      position: "relative",
+      flex: 1,
+      minWidth: 300,
+    }}
   >
-    {page.name}
-  </option>
-))}
-          </select>
 
-          <div
-            style={{
-              position: "absolute",
-              right: 18,
-              top: "50%",
-              transform: "translateY(-50%)",
-              pointerEvents: "none",
-              color: "#666",
-              fontSize: 18,
-            }}
-          >
-            ▼
-          </div>
-        </div>
+    {/* <div
+  style={{
+    position: "relative",
+    width: 400,
+    maxWidth: "100%",
+    flexShrink: 0,
+  }}
+></div> */}
+    <select
+      value={selectedPage}
+      disabled={loading}
+      onChange={(e) => setSelectedPage(e.target.value)}
+      style={{
+        appearance: "none",
+        WebkitAppearance: "none",
+        MozAppearance: "none",
 
-        <button
-          onClick={generateContentTwin}
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: 18,
-            border: "none",
-            borderRadius: 10,
-            background: "#2ba394",
-            color: "white",
-            fontSize: 18,
-            fontWeight: 700,
-            cursor: loading
-              ? "not-allowed"
-              : "pointer",
-            transition: ".2s",
-            boxShadow: loading
-              ? "none"
-              : "0 8px 24px rgba(43,163,148,.30)",
-          }}
+        width: "100%",
+        height: "100%",
+
+        padding: "14px 48px 14px 16px",
+
+        borderRadius: 10,
+        border: "2px solid #d7dde5",
+
+        background: "#fff",
+
+        fontSize: 15,
+        fontWeight: 600,
+
+        cursor: "pointer",
+        outline: "none",
+      }}
+    >
+      {pages.map((page) => (
+        <option
+          key={page.href}
+          value={page.href}
         >
-          Generate Content Twin
-        </button>
+          {page.name}
+        </option>
+      ))}
+    </select>
+
+    <div
+      style={{
+        position: "absolute",
+        right: 16,
+        top: "50%",
+        transform: "translateY(-50%)",
+        pointerEvents: "none",
+        color: "#666",
+      }}
+    >
+      ▼
+    </div>
+  </div>
+
+  <button
+    onClick={generateContentTwin}
+    disabled={loading}
+    style={{
+      minWidth: 220,
+      padding: "14px 24px",
+
+      border: "none",
+      borderRadius: 10,
+
+      background: "#2ba394",
+      color: "#fff",
+
+      fontSize: 16,
+      fontWeight: 700,
+
+      cursor: loading
+        ? "not-allowed"
+        : "pointer",
+
+      boxShadow: loading
+        ? "none"
+        : "0 6px 18px rgba(43,163,148,.25)",
+    }}
+  >
+    Generate Twin
+  </button>
+</div>
       </div>
 
       {/* Result */}

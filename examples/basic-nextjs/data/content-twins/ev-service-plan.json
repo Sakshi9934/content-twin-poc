@@ -47,11 +47,6 @@
       "subject": "EV Care Service Plan",
       "predicate": "applicable to",
       "object": "electric vehicles"
-    },
-    {
-      "subject": "EV Care Service Plan",
-      "predicate": "purchasable at",
-      "object": "vehicle delivery or within first year of ownership"
     }
   ],
   "schemaType": "Product",
@@ -61,31 +56,26 @@
     "name": "Electric Vehicle Service Plan",
     "description": "A prepaid maintenance plan for electric vehicles covering scheduled servicing, battery health checks, and roadside assistance over a multi-year period.",
     "category": "Automotive Service",
-    "manufacturer": {
-      "@type": "Organization",
-      "name": "Service Team"
-    },
     "areaServed": "India",
     "offers": {
       "@type": "Offer",
-      "priceCurrency": "INR",
-      "availability": "https://schema.org/InStock"
+      "description": "3-year and 5-year prepaid maintenance options"
     }
   },
   "recommendedQuestions": [
-    "What does the EV Care Service Plan cover?",
+    "What is included in the EV Care Service Plan?",
     "What are the available plan durations?",
     "When can I purchase the EV Care Service Plan?",
-    "Does the plan include roadside assistance?",
-    "How does the plan help control ownership costs?",
-    "Is battery health monitoring included?"
+    "Does the plan cover battery health checks?",
+    "Is roadside assistance included in the service plan?",
+    "How does the plan help control ownership costs?"
   ],
   "missingFields": [
     "pricing",
-    "coverage details and exclusions",
-    "warranty information",
-    "service provider network details",
-    "claim process information",
+    "coverage details",
+    "exclusions",
+    "claim process",
+    "partner service centers",
     "renewal terms"
   ],
   "id": "ev-service-plan",
@@ -96,6 +86,6 @@
     "path": "/sitecore/content/SitecoreAIDemo/content-twin-poc/Home/products/ev-service-plan",
     "itemId": "D597480914624E21AD49BE9F88556518"
   },
-  "lastGenerated": "2026-07-01T19:24:18.252Z",
+  "lastGenerated": "2026-07-06T19:07:53.493Z",
   "lastReviewedDate": "2026-06-20"
 }
