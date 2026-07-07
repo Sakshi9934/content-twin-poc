@@ -1,6 +1,6 @@
 // src/app/api/agent/ask/route.ts
-// POST /api/agent/ask  { "question": "..." }
-// Returns { answer, sourceUrl, usedTwin, confidence } grounded in one twin.
+// POST /api/agent/ask  { "question": "...", "useTwin": true }
+// useTwin defaults to true. false -> answer from the live human page instead.
 
 import { NextRequest, NextResponse } from 'next/server';
 import { askAgent } from '../../../../lib/agent';
@@ -8,7 +8,7 @@ import { askAgent } from '../../../../lib/agent';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
-  let body: { question?: string };
+  let body: { question?: string; useTwin?: boolean };
   try {
     body = await req.json();
   } catch {
@@ -20,8 +20,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Question is required' }, { status: 400 });
   }
 
+  const useTwin = body.useTwin !== false; // default true
+
   try {
-    const result = await askAgent(question);
+    const result = await askAgent(question, useTwin);
     return NextResponse.json(result);
   } catch (err) {
     return NextResponse.json(
