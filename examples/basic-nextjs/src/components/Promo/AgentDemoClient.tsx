@@ -56,7 +56,7 @@ export default function AgentDemoClient() {
         },
         body: JSON.stringify({
           question: finalQuestion,
-          "use-content-twin": useContentTwin,
+          "useTwin": useContentTwin,
         }),
       });
 

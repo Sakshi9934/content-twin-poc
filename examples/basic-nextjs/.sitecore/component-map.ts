@@ -19,7 +19,7 @@ export const componentMap = new Map<string, NextjsContentSdkComponent>([
   ['Promo', { ...Promo }],
   ['ContentTwinClient', { ...ContentTwinClient, componentType: 'client' }],
   ['content-twin-component', { ...contenttwincomponent }],
-  ['AgentDemoClient', { ...AgentDemoClient }],
+  ['AgentDemoClient', { ...AgentDemoClient, componentType: 'client' }],
   ['agent-demo', { ...agentdemo }],
   ['PartialDesignDynamicPlaceholder', { ...PartialDesignDynamicPlaceholder }],
   ['Navigation', { ...Navigation }],
