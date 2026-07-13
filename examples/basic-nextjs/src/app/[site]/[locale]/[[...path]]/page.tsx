@@ -12,6 +12,7 @@ import Providers from "src/Providers";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { getBaseUrl } from "lib/utils";
+import { getTwin } from "src/lib/twin-store"; 
 
 type PageProps = {
   params: Promise<{
@@ -55,9 +56,38 @@ export default async function Page({ params }: PageProps) {
     components,
   );
 
+  // --- Content Twin injection (JSON-LD) -----------------------------------
+  // Resolve the twin for this page (last URL segment = slug). If a twin exists,
+  // use its AI-generated schema; otherwise fall back to a basic WebPage schema.
+  const slug = path?.length ? path[path.length - 1] : "";
+  const twin = slug ? await getTwin(slug) : null;
+  const twinBaseUrl = getBaseUrl();
+
+  const jsonLd =
+    twin?.schemaJson && Object.keys(twin.schemaJson).length > 0
+      ? twin.schemaJson
+      : twin
+        ? {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            name: twin.title,
+            url: twin.humanUrl,
+            sameAs: twinBaseUrl
+              ? `${twinBaseUrl}/content-twin/${slug}.json`
+              : undefined,
+          }
+        : null;
+  // ------------------------------------------------------------------------
+
   return (
     <NextIntlClientProvider>
       <Providers page={page} componentProps={componentProps}>
+        {jsonLd && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+        )}
         <Layout page={page} />
       </Providers>
     </NextIntlClientProvider>
@@ -94,6 +124,12 @@ export const generateMetadata = async ({ params }: PageProps) => {
   const pathSegment = path?.length ? `/${path.join("/")}` : "";
   const canonicalUrl = baseUrl ? `${baseUrl}${pathSegment}` : undefined;
 
+  // Content Twin pointer: link the human page to its twin JSON, if one exists.
+  const slug = path?.length ? path[path.length - 1] : "";
+  const twin = slug ? await getTwin(slug) : null;
+  const twinUrl =
+    twin && baseUrl ? `${baseUrl}/content-twin/${slug}.json` : undefined;
+
   // The same call as for rendering the page. Should be cached by default react behavior
   const page = await client.getPage(path ?? [], { site, locale });
   const fields = page?.layout.sitecore.route?.fields as RouteFields;
@@ -111,11 +147,14 @@ export const generateMetadata = async ({ params }: PageProps) => {
       fields?.metadataDescription?.value?.toString() ||
       "Sitecore Next.js Basic Example",
     keywords,
-    ...(canonicalUrl && {
-      alternates: {
-        canonical: canonicalUrl,
-      },
-    }),
+    alternates: {
+      ...(canonicalUrl && { canonical: canonicalUrl }),
+      ...(twinUrl && {
+        types: {
+          "application/json": [{ url: twinUrl, title: "Content Twin" }],
+        },
+      }),
+    },
     openGraph: {
       title: fields?.ogTitle?.value?.toString() || "Page",
       description:
