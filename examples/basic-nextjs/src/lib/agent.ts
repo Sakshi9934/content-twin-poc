@@ -1,31 +1,26 @@
 // src/lib/agent.ts
-// Agent retrieval + grounded answering, with a source toggle:
-//   useTwin = true  -> answer from the best-matching Content Twin JSON
-//   useTwin = false -> answer from the live human pages (fetched fresh, no scoring)
+// Agent retrieval + grounded answering with a fallback chain:
+//   useTwin = false                      -> answer from the live human pages
+//   useTwin = true, twin matches         -> answer from the twin JSON
+//   useTwin = true, no matching twin     -> fall back to the live pages (+ notice)
+//   useTwin = true, NO twins exist at all -> fall back to the live pages (+ notice)
 
 import { listTwins, getTwin } from './twin-store';
-import { fetchPageByPath } from './sitecore';
+import { fetchPageByPath, listProductPages } from './sitecore';
 import { normalizePage } from './normalize-page';
 import type { ContentTwin } from './twin-contract';
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_VERSION = '2023-06-01';
-const NO_MATCH = 'I could not find relevant content in the Content Twin index.';
-
-// Only the stable content paths — never any page details. Titles, text, etc.
-// are always read LIVE from Sitecore, so nothing here goes stale.
-const PAGE_PATHS = [
-  '/products/home-loan',
-  '/products/life-insurance',
-  '/products/ev-service-plan',
-];
+const NO_MATCH = 'I could not find relevant content to answer this.';
 
 export interface AgentAnswer {
   answer: string;
   source: 'twin' | 'page' | 'none';
-  sourceUrl: string | null; // the human page to cite
-  usedTwin: string | null;  // the twin URL, when the twin path is used
+  sourceUrl: string | null;
+  usedTwin: string | null;
   confidence: string;
+  notice?: string; // set when the answer fell back from a twin to the live page
 }
 
 function extractJson(text: string): Record<string, unknown> {
@@ -73,11 +68,7 @@ async function selectBestTwin(question: string) {
   return best;
 }
 
-async function askFromTwin(question: string): Promise<AgentAnswer> {
-  const best = await selectBestTwin(question);
-  if (!best) return { answer: NO_MATCH, source: 'none', sourceUrl: null, usedTwin: null, confidence: 'None' };
-
-  const { twin, slug } = best;
+async function answerFromTwin(question: string, twin: ContentTwin, slug: string): Promise<AgentAnswer> {
   const system =
     'You are a controlled content agent. Answer only using the provided Content Twin JSON. ' +
     'Do not use outside knowledge. If the answer is not present, say so. Return valid JSON only.';
@@ -96,19 +87,18 @@ async function askFromTwin(question: string): Promise<AgentAnswer> {
   };
 }
 
-// ---------- HUMAN-PAGE PATH (no hardcoded keywords, no scoring) ----------
+// ---------- HUMAN-PAGE PATH ----------
 async function askFromPage(question: string): Promise<AgentAnswer> {
-  // Read every page LIVE, so details are always current.
+  const productPages = await listProductPages();
   const pages = [];
-  for (const path of PAGE_PATHS) {
-    const item = await fetchPageByPath(path);
-    if (item) pages.push(normalizePage(item, path));
+  for (const pp of productPages) {
+    const item = await fetchPageByPath(pp.path);
+    if (item) pages.push(normalizePage(item, pp.path));
   }
   if (pages.length === 0) {
     return { answer: NO_MATCH, source: 'none', sourceUrl: null, usedTwin: null, confidence: 'None' };
   }
 
-  // Hand all pages to Claude and let it choose the right one + answer + cite.
   const content = pages
     .map((p) => `URL: ${p.canonicalUrl}\nTitle: ${p.title}\nSummary: ${p.summary}\nContent: ${p.content}`)
     .join('\n\n---\n\n');
@@ -137,5 +127,26 @@ async function askFromPage(question: string): Promise<AgentAnswer> {
 }
 
 export async function askAgent(question: string, useTwin: boolean): Promise<AgentAnswer> {
-  return useTwin ? askFromTwin(question) : askFromPage(question);
+  // Explicit page mode — no twins involved, no notice.
+  if (!useTwin) {
+    return askFromPage(question);
+  }
+
+  const twins = await listTwins();
+
+  // Case: no twins exist at all (empty store).
+  if (twins.length === 0) {
+    const page = await askFromPage(question);
+    return { ...page, notice: 'No Content Twins are available yet — showing details from the live page.' };
+  }
+
+  // Case: a twin matches -> answer from it.
+  const best = await selectBestTwin(question);
+  if (best) {
+    return answerFromTwin(question, best.twin, best.slug);
+  }
+
+  // Case: twins exist but none matched this question -> fall back to the live page.
+  const page = await askFromPage(question);
+  return { ...page, notice: 'No Content Twin matched this question — showing details from the live page.' };
 }
