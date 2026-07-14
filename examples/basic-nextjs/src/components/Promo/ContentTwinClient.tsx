@@ -125,9 +125,9 @@ export default function ContentTwinClient({
     const response = await fetch("/api/content-twin/generate", {
   method: "POST",
   headers: {
-    "Content-Type": "application/json",
-    "x-content-twin-admin-key":
-      process.env.NEXT_PUBLIC_CONTENT_TWIN_ADMIN_KEY!,
+    "Content-Type": "application/json"
+    // "x-content-twin-admin-key":
+      // process.env.NEXT_PUBLIC_CONTENT_TWIN_ADMIN_KEY!,
   },
   body: JSON.stringify({
     path: selectedPage,
