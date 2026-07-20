@@ -4,7 +4,9 @@ import { BYOCServerWrapper, NextjsContentSdkComponent, FEaaSServerWrapper } from
 import { Form } from '@sitecore-content-sdk/nextjs';
 
 // end of built-in components
+import * as TitleAndText from 'src/components/Promo/TitleAndText';
 import * as Promo from 'src/components/Promo/Promo';
+import * as FAQ from 'src/components/Promo/FAQ';
 import * as ContentTwinClient from 'src/components/Promo/ContentTwinClient';
 import * as contenttwincomponent from 'src/components/Promo/content-twin-component';
 import * as AgentDemoClient from 'src/components/Promo/AgentDemoClient';
@@ -16,7 +18,9 @@ export const componentMap = new Map<string, NextjsContentSdkComponent>([
   ['BYOCWrapper', BYOCServerWrapper],
   ['FEaaSWrapper', FEaaSServerWrapper],
   ['Form', { ...Form, componentType: 'client' }],
+  ['TitleAndText', { ...TitleAndText }],
   ['Promo', { ...Promo }],
+  ['FAQ', { ...FAQ }],
   ['ContentTwinClient', { ...ContentTwinClient, componentType: 'client' }],
   ['content-twin-component', { ...contenttwincomponent }],
   ['AgentDemoClient', { ...AgentDemoClient, componentType: 'client' }],

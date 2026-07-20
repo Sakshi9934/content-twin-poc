@@ -23,7 +23,11 @@ const suggestionPool = [
   "Can you explain this product simply?",
 ];
 
-export default function AgentDemoClient() {
+interface AgentDemoClientProps {
+  apiEndpoint: string;
+}
+
+export default function AgentDemoClient({ apiEndpoint }: AgentDemoClientProps) {
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AgentResponse | null>(null);
@@ -49,14 +53,16 @@ export default function AgentDemoClient() {
     setResult(null);
 
     try {
-      const response = await fetch("/api/agent/ask", {
+
+      console.log("apiEndpoint in client:",apiEndpoint);
+      const response = await fetch(apiEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           question: finalQuestion,
-          "useTwin": useContentTwin,
+          useTwin: useContentTwin,
         }),
       });
 
@@ -70,8 +76,7 @@ export default function AgentDemoClient() {
     } catch (err: any) {
       setResult({
         answer:
-          err.message ??
-          "Something went wrong while contacting the AI Agent.",
+          err.message ?? "Something went wrong while contacting the AI Agent.",
         sourceUrl: null,
         usedTwin: null,
         confidence: "Low",
@@ -93,28 +98,27 @@ export default function AgentDemoClient() {
     }, 2000);
   }
 
-  function confidenceStyle(level: string) {
-    switch (level.toLowerCase()) {
-      case "high":
-        return {
-          background: "#dcfce7",
-          color: "#15803d",
-        };
+  function confidenceStyle(level?: string) {
+  switch ((level ?? "Low").toLowerCase()) {
+    case "high":
+      return {
+        background: "#dcfce7",
+        color: "#15803d",
+      };
 
-      case "medium":
-        return {
-          background: "#fef3c7",
-          color: "#b45309",
-        };
+    case "medium":
+      return {
+        background: "#fef3c7",
+        color: "#b45309",
+      };
 
-      default:
-        return {
-          background: "#fee2e2",
-          color: "#b91c1c",
-        };
-    }
+    default:
+      return {
+        background: "#fee2e2",
+        color: "#b91c1c",
+      };
   }
-
+}
   return (
     <div
       style={{
@@ -175,60 +179,60 @@ export default function AgentDemoClient() {
       {/* NEW SEGMENTED TOGGLE */}
 
       <div
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: 16,
-    marginBottom: 24,
-  }}
->
-  <span
-    style={{
-      fontWeight: 600,
-      color: "#374151",
-    }}
-  >
-    Answer Using
-  </span>
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 16,
+          marginBottom: 24,
+        }}
+      >
+        <span
+          style={{
+            fontWeight: 600,
+            color: "#374151",
+          }}
+        >
+          Answer Using
+        </span>
 
-  <button
-    onClick={() => setUseContentTwin((prev) => !prev)}
-    style={{
-      position: "relative",
-      width: 62,
-      height: 34,
-      borderRadius: 999,
-      border: "none",
-      background: useContentTwin ? "#d9467c" : "#2563eb",
-      cursor: "pointer",
-      transition: "background .25s ease",
-    }}
-  >
-    <div
-      style={{
-        position: "absolute",
-        top: 3,
-        left: useContentTwin ? 31 : 3,
-        width: 28,
-        height: 28,
-        borderRadius: "50%",
-        background: "#fff",
-        transition: "left .25s ease",
-        boxShadow: "0 2px 8px rgba(0,0,0,.25)",
-      }}
-    />
-  </button>
+        <button
+          onClick={() => setUseContentTwin((prev) => !prev)}
+          style={{
+            position: "relative",
+            width: 62,
+            height: 34,
+            borderRadius: 999,
+            border: "none",
+            background: useContentTwin ? "#d9467c" : "#2563eb",
+            cursor: "pointer",
+            transition: "background .25s ease",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: 3,
+              left: useContentTwin ? 31 : 3,
+              width: 28,
+              height: 28,
+              borderRadius: "50%",
+              background: "#fff",
+              transition: "left .25s ease",
+              boxShadow: "0 2px 8px rgba(0,0,0,.25)",
+            }}
+          />
+        </button>
 
-  <span
-    style={{
-      fontWeight: 600,
-      color: useContentTwin ? "#d9467c" : "#2563eb",
-      minWidth: 120,
-    }}
-  >
-    {useContentTwin ? "Content Twin" : "Original Page"}
-  </span>
-</div>
+        <span
+          style={{
+            fontWeight: 600,
+            color: useContentTwin ? "#d9467c" : "#2563eb",
+            minWidth: 120,
+          }}
+        >
+          {useContentTwin ? "Content Twin" : "Original Page"}
+        </span>
+      </div>
 
       <div
         style={{
@@ -280,8 +284,7 @@ export default function AgentDemoClient() {
               fontWeight: 700,
               cursor: loading ? "not-allowed" : "pointer",
               minHeight: 60,
-              boxShadow:
-                "0 8px 20px rgba(217,70,124,.25)",
+              boxShadow: "0 8px 20px rgba(217,70,124,.25)",
             }}
           >
             Ask →
@@ -327,12 +330,7 @@ export default function AgentDemoClient() {
               gap: 20,
             }}
           >
-            <ThreeDots
-              visible
-              height={80}
-              width={80}
-              color="#d9467c"
-            />
+            <ThreeDots visible height={80} width={80} color="#d9467c" />
 
             <h3
               style={{
@@ -398,10 +396,7 @@ export default function AgentDemoClient() {
                       textDecoration: "none",
                     }}
                   >
-                    {result.sourceUrl.replace(
-                      "http://localhost:3000",
-                      ""
-                    )}
+                    {result.sourceUrl.replace("http://localhost:3000", "")}
                   </a>
                 ) : (
                   <span>N/A</span>
@@ -409,9 +404,7 @@ export default function AgentDemoClient() {
               </div>
 
               <div>
-                <strong>
-                  {useContentTwin ? "Twin Used:" : "Page:"}
-                </strong>{" "}
+                <strong>{useContentTwin ? "Twin Used:" : "Page:"}</strong>{" "}
                 {result.usedTwin ? (
                   <a
                     href={result.usedTwin}
@@ -438,16 +431,14 @@ export default function AgentDemoClient() {
                   fontSize: 14,
                 }}
               >
-                {result.confidence} Confidence
+                {result.confidence ?? "Low"} Confidence
               </span>
 
               <button
                 onClick={copyAnswer}
                 style={{
                   marginLeft: "auto",
-                  background: copied
-                    ? "#16a34a"
-                    : "#d9467c",
+                  background: copied ? "#16a34a" : "#d9467c",
                   color: "#fff",
                   border: "none",
                   borderRadius: 8,
@@ -456,9 +447,7 @@ export default function AgentDemoClient() {
                   fontWeight: 700,
                 }}
               >
-                {copied
-                  ? "✓ Copied!"
-                  : "📋 Copy Answer"}
+                {copied ? "✓ Copied!" : "📋 Copy Answer"}
               </button>
             </div>
           </div>
