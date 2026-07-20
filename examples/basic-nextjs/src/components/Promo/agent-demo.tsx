@@ -9,7 +9,15 @@ import AgentDemoClient from "./AgentDemoClient";
 interface AgentDemoProps {
   rendering: ComponentRendering & { params: ComponentParams };
   params: ComponentParams;
-  page:ComponentParams;
+  page: {
+    layout: {
+      sitecore: {
+        route: {
+          name: string;
+        };
+      };
+    };
+  };
 }
 
 export const Default = (props: AgentDemoProps): JSX.Element => {
