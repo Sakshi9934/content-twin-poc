@@ -1,9 +1,6 @@
 // src/lib/agent.ts
-// Agent retrieval + grounded answering with a fallback chain:
-//   useTwin = false                      -> answer from the live human pages
-//   useTwin = true, twin matches         -> answer from the twin JSON
-//   useTwin = true, no matching twin     -> fall back to the live pages (+ notice)
-//   useTwin = true, NO twins exist at all -> fall back to the live pages (+ notice)
+// Grounded agent with twin -> page fallback, now reporting token usage + timing
+// on every answer so twin vs page cost can be compared.
 
 import { listTwins, getTwin } from './twin-store';
 import { fetchPageByPath, listProductPages } from './sitecore';
@@ -14,13 +11,35 @@ const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_VERSION = '2023-06-01';
 const NO_MATCH = 'I could not find relevant content to answer this.';
 
+export interface AgentUsage {
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+  durationMs: number;
+  calls: number; // number of AI calls (1 for this RAG agent)
+}
+
 export interface AgentAnswer {
   answer: string;
   source: 'twin' | 'page' | 'none';
   sourceUrl: string | null;
   usedTwin: string | null;
   confidence: string;
-  notice?: string; // set when the answer fell back from a twin to the live page
+  notice?: string;
+  usage: AgentUsage;
+}
+
+// The source URL is returned separately (sourceUrl / usedTwin), so strip any
+// URLs or trailing "Sources" block the model puts in the answer text.
+// Formatting of the remaining text is left to the front end.
+export function stripSources(raw: string): string {
+  const original = (raw ?? '').trim();
+  let out = original;
+  out = out.replace(/\n+\s*\**\s*(?:sources?|references?)\s*\**\s*:?\s*[\s\S]*$/i, '');
+  out = out.replace(/^\s*[-•]?\s*\**\s*https?:\/\/\S+\s*$/gim, '');
+  out = out.replace(/\(https?:\/\/[^)]+\)/g, '');
+  out = out.trim();
+  return out.length > 0 ? out : original;
 }
 
 function extractJson(text: string): Record<string, unknown> {
@@ -34,10 +53,11 @@ function extractJson(text: string): Record<string, unknown> {
   }
 }
 
-async function callClaude(system: string, user: string): Promise<Record<string, unknown>> {
+// Returns the parsed JSON plus token usage for this single call.
+async function callClaude(system: string, user: string): Promise<{ out: Record<string, unknown>; input: number; output: number }> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not set');
-  const model = process.env.ANTHROPIC_MODEL ?? 'claude-haiku-4-5-20251001';
+  const model = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-5';
 
   const res = await fetch(ANTHROPIC_URL, {
     method: 'POST',
@@ -46,9 +66,20 @@ async function callClaude(system: string, user: string): Promise<Record<string, 
   });
   if (!res.ok) throw new Error(`AI request failed: HTTP ${res.status} ${await res.text()}`);
 
-  const data = (await res.json()) as { content?: Array<{ type: string; text?: string }> };
+  const data = (await res.json()) as {
+    content?: Array<{ type: string; text?: string }>;
+    usage?: { input_tokens?: number; output_tokens?: number };
+  };
   const text = data.content?.find((b) => b.type === 'text')?.text ?? '';
-  return extractJson(text);
+  return {
+    out: extractJson(text),
+    input: data.usage?.input_tokens ?? 0,
+    output: data.usage?.output_tokens ?? 0,
+  };
+}
+
+function makeUsage(input: number, output: number, startedAt: number, calls = 1): AgentUsage {
+  return { inputTokens: input, outputTokens: output, totalTokens: input + output, durationMs: Date.now() - startedAt, calls };
 }
 
 // ---------- TWIN PATH ----------
@@ -68,27 +99,35 @@ async function selectBestTwin(question: string) {
   return best;
 }
 
-async function answerFromTwin(question: string, twin: ContentTwin, slug: string): Promise<AgentAnswer> {
+async function answerFromTwin(
+  question: string,
+  twin: ContentTwin,
+  slug: string,
+  startedAt = Date.now()
+): Promise<AgentAnswer> {
   const system =
     'You are a controlled content agent. Answer only using the provided Content Twin JSON. ' +
-    'Do not use outside knowledge. If the answer is not present, say so. Return valid JSON only.';
+    'Do not use outside knowledge. If the answer is not present, say so. Return valid JSON only. ' +
+    'The "answer" value must be ONE clean final answer — no reasoning shown and no ' +
+    'self-corrections. Do NOT include URLs or a "Sources" section in the answer.';
   const user =
     `Question: ${question}\n\nContent Twin JSON:\n${JSON.stringify(twin)}\n\n` +
     `Return JSON only: { "answer": "...", "confidence": "High | Medium | Low" }`;
 
-  const out = await callClaude(system, user);
+  const { out, input, output } = await callClaude(system, user);
   const base = (process.env.CONTENT_TWIN_BASE_URL ?? '').replace(/\/$/, '');
   return {
-    answer: (out.answer as string) ?? '',
+    answer: stripSources((out.answer as string) ?? ''),
     source: 'twin',
     sourceUrl: twin.humanUrl,
     usedTwin: base ? `${base}/content-twin/${slug}.json` : `/content-twin/${slug}.json`,
     confidence: (out.confidence as string) ?? 'Medium',
+    usage: makeUsage(input, output, startedAt),
   };
 }
 
 // ---------- HUMAN-PAGE PATH ----------
-async function askFromPage(question: string): Promise<AgentAnswer> {
+async function askFromPage(question: string, startedAt = Date.now()): Promise<AgentAnswer> {
   const productPages = await listProductPages();
   const pages = [];
   for (const pp of productPages) {
@@ -96,7 +135,7 @@ async function askFromPage(question: string): Promise<AgentAnswer> {
     if (item) pages.push(normalizePage(item, pp.path));
   }
   if (pages.length === 0) {
-    return { answer: NO_MATCH, source: 'none', sourceUrl: null, usedTwin: null, confidence: 'None' };
+    return { answer: NO_MATCH, source: 'none', sourceUrl: null, usedTwin: null, confidence: 'None', usage: makeUsage(0, 0, startedAt, 0) };
   }
 
   const content = pages
@@ -106,47 +145,39 @@ async function askFromPage(question: string): Promise<AgentAnswer> {
   const system =
     'You are a controlled content agent. Answer only using the provided pages. ' +
     'Do not use outside knowledge. Pick the single most relevant page and answer from it. ' +
-    'If no page contains the answer, set sourceUrl to null. Return valid JSON only.';
+    'If no page contains the answer, set sourceUrl to null. Return valid JSON only. ' +
+    'The "answer" value must be ONE clean final answer — no reasoning shown and no ' +
+    'self-corrections. Do NOT include URLs or a "Sources" section in the answer.';
   const user =
     `Question: ${question}\n\nPages:\n${content}\n\n` +
     `Return JSON only: { "answer": "...", "sourceUrl": "<the URL of the page you used, or null>", "confidence": "High | Medium | Low" }`;
 
-  const out = await callClaude(system, user);
+  const { out, input, output } = await callClaude(system, user);
   const sourceUrl = (out.sourceUrl as string) || null;
+  const usage = makeUsage(input, output, startedAt);
 
   if (!sourceUrl) {
-    return { answer: (out.answer as string) ?? NO_MATCH, source: 'none', sourceUrl: null, usedTwin: null, confidence: 'None' };
+    return { answer: stripSources((out.answer as string) ?? NO_MATCH), source: 'none', sourceUrl: null, usedTwin: null, confidence: 'None', usage };
   }
-  return {
-    answer: (out.answer as string) ?? '',
-    source: 'page',
-    sourceUrl,
-    usedTwin: null,
-    confidence: (out.confidence as string) ?? 'Medium',
-  };
+  return { answer: stripSources((out.answer as string) ?? ''), source: 'page', sourceUrl, usedTwin: null, confidence: (out.confidence as string) ?? 'Medium', usage };
 }
 
 export async function askAgent(question: string, useTwin: boolean): Promise<AgentAnswer> {
-  // Explicit page mode — no twins involved, no notice.
-  if (!useTwin) {
-    return askFromPage(question);
-  }
+  // Start the clock here so durationMs covers the whole request, including the
+  // twin lookup and scoring that happen before any AI call on the fallback path.
+  const startedAt = Date.now();
+
+  if (!useTwin) return askFromPage(question, startedAt);
 
   const twins = await listTwins();
-
-  // Case: no twins exist at all (empty store).
   if (twins.length === 0) {
-    const page = await askFromPage(question);
+    const page = await askFromPage(question, startedAt);
     return { ...page, notice: 'No Content Twins are available yet — showing details from the live page.' };
   }
 
-  // Case: a twin matches -> answer from it.
   const best = await selectBestTwin(question);
-  if (best) {
-    return answerFromTwin(question, best.twin, best.slug);
-  }
+  if (best) return answerFromTwin(question, best.twin, best.slug, startedAt);
 
-  // Case: twins exist but none matched this question -> fall back to the live page.
-  const page = await askFromPage(question);
+  const page = await askFromPage(question, startedAt);
   return { ...page, notice: 'No Content Twin matched this question — showing details from the live page.' };
 }
