@@ -89,7 +89,12 @@ function systemPrompt(preferTwin: boolean): string {
     'Begin your answer by stating whether you answered from a Content Twin or from the live page. ' +
     'If neither the twins nor the pages contain the answer, say you could not find relevant content.\n\n' +
     'Do NOT include any URLs, links or a "Sources" section in the answer — the source is returned ' +
-    'separately by the system.'
+    'separately by the system.'+
+    '\n\nOUTPUT FORMAT:\n' +
+'Write in plain text only. ' +
+'Use normal sentences and paragraphs. ' +
+'Do not use Markdown headings, bullet points, numbered lists, bold text, italics, tables, or code blocks. ' +
+'Return only the answer text.'
   );
 }
 

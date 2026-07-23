@@ -1,0 +1,120 @@
+{
+  "machineSummary": "A comprehensive guide to home loans for first-time buyers in India, covering loan features including up to 85% financing, flexible 5-30 year tenures, and competitive floating rates starting at 8.4% per annum, along with eligibility and application requirements.",
+  "shortAnswer": "A home loan product designed for first-time homebuyers offering up to 85% property financing, flexible repayment terms of 5-30 years, and floating interest rates from 8.4% per annum.",
+  "keyFacts": [
+    "Financing available up to 85% of property value",
+    "Repayment tenure options range from 5 to 30 years",
+    "Floating interest rates starting from 8.4% per annum",
+    "Designed specifically for first-time homebuyers",
+    "Applicable for both apartment and house purchases",
+    "Covers eligibility, down payment, EMI planning, and documentation"
+  ],
+  "entities": [
+    "Home Loan",
+    "First-Time Buyers",
+    "Banking",
+    "India",
+    "Marketing Team"
+  ],
+  "topics": [
+    "Home Loan Products",
+    "First-Time Homebuyers",
+    "Mortgage Financing",
+    "Interest Rates",
+    "Loan Eligibility",
+    "EMI Planning",
+    "Down Payment",
+    "Loan Documentation",
+    "Repayment Tenure"
+  ],
+  "relationships": [
+    {
+      "subject": "Home Loan for First-Time Buyers",
+      "predicate": "targets",
+      "object": "First-Time Buyers"
+    },
+    {
+      "subject": "Home Loan for First-Time Buyers",
+      "predicate": "offers financing up to",
+      "object": "85% of property value"
+    },
+    {
+      "subject": "Home Loan for First-Time Buyers",
+      "predicate": "provides repayment tenure of",
+      "object": "5 to 30 years"
+    },
+    {
+      "subject": "Home Loan for First-Time Buyers",
+      "predicate": "has interest rate starting from",
+      "object": "8.4% per annum"
+    },
+    {
+      "subject": "Home Loan for First-Time Buyers",
+      "predicate": "is available in",
+      "object": "India"
+    },
+    {
+      "subject": "Home Loan for First-Time Buyers",
+      "predicate": "is offered by",
+      "object": "Banking industry"
+    }
+  ],
+  "schemaType": "Product",
+  "schemaJson": {
+    "@context": "https://schema.org",
+    "@type": "FinancialProduct",
+    "name": "Home Loan for First-Time Buyers",
+    "description": "A guide to home loan options designed for first-time buyers, covering eligibility, down payment, EMI planning, and the documents needed to apply.",
+    "url": "http://localhost:3000/products/home-loan",
+    "category": "Home Loan",
+    "industry": "Banking",
+    "audience": {
+      "@type": "Audience",
+      "audienceType": "First-Time Buyers"
+    },
+    "areaServed": "India",
+    "interestRate": {
+      "@type": "PriceSpecification",
+      "priceCurrency": "INR",
+      "price": "8.4",
+      "description": "Floating interest rate starting from 8.4% per annum"
+    },
+    "loanTerm": "5 to 30 years",
+    "loanAmount": "Up to 85% of property value",
+    "author": {
+      "@type": "Organization",
+      "name": "Marketing Team"
+    },
+    "dateModified": "2026-06-20"
+  },
+  "recommendedQuestions": [
+    "What is the maximum loan amount available for first-time home buyers?",
+    "What are the interest rate options for this home loan?",
+    "What is the range of repayment tenures available?",
+    "What documents are required to apply for this home loan?",
+    "What is the minimum down payment required?",
+    "How is EMI calculated for this home loan?",
+    "What are the eligibility criteria for first-time buyers?",
+    "Can this loan be used for both apartments and houses?"
+  ],
+  "missingFields": [
+    "Eligibility criteria details",
+    "Minimum down payment percentage",
+    "EMI calculation methodology",
+    "Required documents list",
+    "Processing time",
+    "Loan approval conditions",
+    "Prepayment penalties",
+    "Insurance requirements"
+  ],
+  "id": "home-loan",
+  "title": "Home Loan for First-Time Buyers",
+  "humanUrl": "http://localhost:3000/products/home-loan",
+  "source": {
+    "system": "XM Cloud",
+    "path": "/sitecore/content/SitecoreAIDemo/content-twin-poc/Home/products/home-loan",
+    "itemId": "25D580DE2D8F4A83A1226228CF92D6AC"
+  },
+  "lastGenerated": "2026-07-23T06:59:28.324Z",
+  "lastReviewedDate": "2026-06-20"
+}

@@ -5,12 +5,16 @@ import { ComponentProps } from 'lib/component-props';
 type TitleAndTextProps = ComponentProps;
 
 export const Default = (props: TitleAndTextProps): JSX.Element => {
+    console.log(props?.page?.layout?.sitecore?.route?.fields);
   const routeFields = props.page?.layout?.sitecore?.route?.fields;
 
   if (!routeFields) {
     return <span>No content found</span>;
   }
 
+  const title = routeFields['Title'] as Field<string>;
+  const summary = routeFields['Summary'] as Field<string>;
+  const mainContent = routeFields['Main Content'] as Field<string>;
   const productOrService = routeFields['Product Or Service'] as Field<string>;
   const industry = routeFields['Industry'] as Field<string>;
   const audience = routeFields['Audience'] as Field<string>;
@@ -60,18 +64,18 @@ export const Default = (props: TitleAndTextProps): JSX.Element => {
               marginBottom: 14,
             }}
           >
-            OUR COMMITMENT
+            WE'RE OFFERING
           </div>
 
           <h2
             style={{
-              fontSize: '2.8rem',
+              fontSize: '2.1rem',
               color: '#0f172a',
               marginTop: 0,
               marginBottom: '24px',
             }}
           >
-            Helping people achieve financial confidence.
+            {title?.value as string}
           </h2>
 
           <p
@@ -81,26 +85,8 @@ export const Default = (props: TitleAndTextProps): JSX.Element => {
               fontSize: '1.05rem',
             }}
           >
-            At NorthBank, we believe financial services should be simple,
-            transparent, and tailored to your goals. Whether you're buying
-            your first home, protecting your loved ones, or planning for the
-            future, our team is committed to providing expert guidance and
-            dependable support every step of the way.
+            {mainContent?.value}
           </p>
-
-          <ul
-            style={{
-              marginTop: '30px',
-              lineHeight: 2,
-              color: '#334155',
-              paddingLeft: '20px',
-            }}
-          >
-            <li>Trusted financial expertise</li>
-            <li>Personalized banking solutions</li>
-            <li>Transparent pricing with no hidden surprises</li>
-            <li>Secure digital experiences backed by modern technology</li>
-          </ul>
         </div>
       </section>
 
