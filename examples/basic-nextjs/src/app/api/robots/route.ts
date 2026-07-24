@@ -21,12 +21,28 @@ export const dynamic = 'force-dynamic';
  *
  * To restrict AI crawler access, modify the generateRobotsContent function below
  * or configure your hosting provider's bot management settings.
+ *
+ * Content Twin: /content-twin/ is explicitly allowed so crawlers and agents may
+ * read the machine-readable twin endpoints and their index.
  */
 
 const { GET: sitecoreGET } = createRobotsRouteHandler({
   client,
   sites,
 });
+
+// Content Twin block, reused by both the generated and the enhanced robots.txt.
+function contentTwinRules(baseUrl: string): string {
+  return `# ==============================================
+# Content Twin - Machine-readable endpoints
+# ==============================================
+# Machine-readable JSON versions of published pages.
+# Start from the index: ${baseUrl}/content-twin/index.json
+
+User-agent: *
+Allow: /content-twin/
+Allow: /content-twin/index.json`;
+}
 
 // Generate robots.txt
 function generateRobotsContent(baseUrl: string): string {
@@ -115,6 +131,8 @@ Allow: /
 User-agent: *
 Allow: /
 
+${contentTwinRules(baseUrl)}
+
 # ==============================================
 # Sitemap Location
 # ==============================================
@@ -137,7 +155,7 @@ export async function GET(request: NextRequest) {
     // Check if Sitecore returned a blocking robots.txt
     // Common blocking patterns: "Disallow: /" without any "Allow:" rules
     const hasBlockingRule = text.includes('Disallow: /') && !text.includes('Allow:');
-    
+
     if (hasBlockingRule) {
       // Return our permissive robots.txt with AI crawler allowances
       const baseUrl = new URL(request.url).origin;
@@ -190,6 +208,11 @@ function ensureAICrawlerAccess(existingContent: string, baseUrl: string): string
     ).join('\n');
     
     enhanced += `\n\n# ==============================================\n# AI Crawlers - Added for discoverability\n# ==============================================\n${aiRules}`;
+  }
+
+  // Content Twin: allow the machine-readable endpoints if not already permitted
+  if (!existingContent.includes('/content-twin/')) {
+    enhanced += `\n\n${contentTwinRules(baseUrl)}`;
   }
 
   // Ensure sitemap is present
